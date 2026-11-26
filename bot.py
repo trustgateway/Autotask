@@ -9,8 +9,16 @@ from telegram.ext import (Application, CommandHandler, MessageHandler, CallbackQ
                           ContextTypes, filters)
 
 logging.basicConfig(level=logging.INFO)
-TOKEN = "9295622848:AAF_xdr2yZhxCdObLDfU1wXBO6dkeFWfl5Y"
-ADMINS = {8061612320}
+_envf = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+if os.path.exists(_envf):
+    for _l in open(_envf, encoding="utf-8"):
+        _l = _l.strip()
+        if _l and not _l.startswith("#") and "=" in _l:
+            _k, _v = _l.split("=", 1)
+            os.environ.setdefault(_k.strip(), _v.strip().strip("\"'"))
+
+TOKEN = os.environ.get("BOT_TOKEN") or "9295622848:AAF_xdr2yZhxCdObLDfU1wXBO6dkeFWfl5Y"
+ADMINS = {int(x) for x in (os.environ.get("ADMIN_IDS") or "8061612320").split(",") if x.strip()}
 DB = os.environ.get("DB_PATH", "bot.db")
 PORT = int(os.environ.get("PORT", "8080"))
 BASE_URL = os.environ.get("BASE_URL", "").rstrip("/")
